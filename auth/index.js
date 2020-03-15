@@ -1,5 +1,7 @@
 const express = require('express');
 const Joi = require('@hapi/joi');
+const bcrypt = require('bcrypt');
+const saltRounds = 12;
 
 const db = require('../db/connection');
 const users = db.get('users');
@@ -41,6 +43,7 @@ router.post('/signup', async (req, res, next) => {
     }
     
     // hash the password
+    const hashPassword = await bcrypt.hash(result.password, saltRounds);
 
     // insert to DB
     res.json(user);
