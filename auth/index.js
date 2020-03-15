@@ -8,4 +8,11 @@ router.get('/', (req, res) => {
   });
 });
 
+router.post('/signup', (req, res) => {
+  console.log(req.body);
+  res.json({
+    message: 'signup'
+  });  
+})
+
 module.exports = router;
