@@ -34,8 +34,6 @@ router.post('/signup', async (req, res, next) => {
       username: result.username
     });
     if (user) {
-      console.log(user);
-      
       // there is already a user in the DB with this username
       const error = new Error('That username is already exist. Please choose another one.');
       res.statusCode=400;
@@ -46,7 +44,12 @@ router.post('/signup', async (req, res, next) => {
     const hashPassword = await bcrypt.hash(result.password, saltRounds);
 
     // insert to DB
-    res.json(user);
+    const newUser = {
+      username: result.username,
+      password: hashPassword
+    };
+    const created = await users.insert(newUser);
+    res.json(created);
   } catch (error) {
     next(error);
   }
