@@ -49,6 +49,7 @@ router.post('/signup', async (req, res, next) => {
       password: hashPassword
     };
     const created = await users.insert(newUser);
+    delete created.password;
     res.json(created);
   } catch (error) {
     next(error);
