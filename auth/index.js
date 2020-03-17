@@ -36,7 +36,7 @@ router.post('/signup', async (req, res, next) => {
     if (user) {
       // there is already a user in the DB with this username
       const error = new Error('That username is already exist. Please choose another one.');
-      res.statusCode=400;
+      res.statusCode=409;
       return next(error);
     }
     
@@ -52,6 +52,7 @@ router.post('/signup', async (req, res, next) => {
     delete created.password;
     res.json(created);
   } catch (error) {
+    res.statusCode = 400;
     next(error);
   }
 })
