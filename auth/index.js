@@ -19,6 +19,26 @@ const schema = Joi.object({
   password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9-_]{3,}$'))
 });
 
+function createTokenSendResponse(user, res, next) {
+  const payload = {
+    _id: user._id,
+    username: user.username
+  };
+
+  jwt.sign(
+    payload,
+    process.env.TOKEN_SECRET,
+    { expiresIn: '1d' },
+    (err, token) => {
+      if (err) {
+        return failLogin(res, next);
+      }
+
+      res.json({ token });
+    }
+  );
+}
+
 router.get('/', (req, res) => {
   res.json({
     message: '🔐'
@@ -57,9 +77,8 @@ router.post('/signup', async (req, res, next) => {
   };
   const created = await users.insert(newUser);
 
-  // 5. return registered user
-  delete created.password;
-  res.json(created);
+  // 4. Create and Response a JWT
+  createTokenSendResponse(created, res, next);
 });
 
 function failLogin(res, next) {
@@ -92,24 +111,8 @@ router.post('/login', async (req, res, next) => {
     return failLogin(res, next);
   }
 
-  // 4. Create and sign a JWT
-  const payload = {
-    _id: user._id,
-    username: user.username
-  };
-  jwt.sign(
-    payload,
-    process.env.TOKEN_SECRET,
-    { expiresIn: '1d' },
-    (err, token) => {
-      if (err) {
-        return failLogin(res, next);
-      }
-
-      // 5. Response with JWT
-      res.json({ token });
-    }
-  );
+  // 4. Create and Response a JWT
+  createTokenSendResponse(user, res, next);
 });
 
 module.exports = router;
