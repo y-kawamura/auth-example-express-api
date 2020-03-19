@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const auth = require('./auth');
+const middlewares = require('./auth/middlewares');
 
 const app = express();
 
@@ -25,9 +26,12 @@ app.use(
   })
 );
 
+app.use(middlewares.checkTokenSetUser);
+
 app.get('/', (req, res) => {
   res.json({
-    message: 'Hello penta!'
+    message: 'Hello penta!',
+    user: req.user
   });
 });
 
