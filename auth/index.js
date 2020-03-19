@@ -2,6 +2,7 @@ const express = require('express');
 const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
 const saltRounds = 12;
+const jwt = require('jsonwebtoken');
 
 const db = require('../db/connection');
 const users = db.get('users');
@@ -88,11 +89,27 @@ router.post('/login', async (req, res, next) => {
   const match = await bcrypt.compare(validated.password, user.password);
   if (!match) {
     // password is invalid
-    console.log('test2');
     return failLogin(res, next);
   }
 
-  res.json({ match });
+  // 4. Create and sign a JWT
+  const payload = {
+    _id: user._id,
+    username: user.username
+  };
+  jwt.sign(
+    payload,
+    process.env.TOKEN_SECRET,
+    { expiresIn: '1d' },
+    (err, token) => {
+      if (err) {
+        return failLogin(res, next);
+      }
+
+      // 5. Response with JWT
+      res.json({ token });
+    }
+  );
 });
 
 module.exports = router;
