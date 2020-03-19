@@ -1,6 +1,7 @@
 const express = require('express');
 const volleyball = require('volleyball');
 const cors = require('cors');
+const rateLimit = require('express-rate-limit');
 
 require('dotenv').config();
 
@@ -15,6 +16,14 @@ app.use(
   })
 );
 app.use(express.json());
+
+// rate limit for login request
+app.use(
+  rateLimit('/auth/login', {
+    windowMs: 15 * 60 * 1000, // 15 min
+    max: 100
+  })
+);
 
 app.get('/', (req, res) => {
   res.json({
