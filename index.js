@@ -20,12 +20,12 @@ app.use(
 app.use(express.json());
 
 // rate limit for login request
-app.use(
-  rateLimit('/auth/login', {
-    windowMs: 15 * 60 * 1000, // 15 min
-    max: 100
-  })
-);
+// app.use(
+//   rateLimit('/auth/login', {
+//     windowMs: 15 * 60 * 1000, // 15 min
+//     max: 100
+//   })
+// );
 
 app.use(middlewares.checkTokenSetUser);
 
