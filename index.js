@@ -7,6 +7,7 @@ require('dotenv').config();
 
 const auth = require('./auth');
 const notes = require('./api/notes');
+const users = require('./api/users');
 const middlewares = require('./auth/middlewares');
 
 const app = express();
@@ -38,6 +39,7 @@ app.get('/', (req, res) => {
 
 app.use('/auth', auth);
 app.use('/api/v1/notes', middlewares.isLoggedIn, notes);
+app.use('/api/v1/', users);
 
 function notFound(req, res, next) {
   res.status(404);
