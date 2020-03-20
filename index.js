@@ -6,6 +6,7 @@ const rateLimit = require('express-rate-limit');
 require('dotenv').config();
 
 const auth = require('./auth');
+const notes = require('./api/notes');
 const middlewares = require('./auth/middlewares');
 
 const app = express();
@@ -36,6 +37,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/auth', auth);
+app.use('/api/v1/notes', middlewares.isLoggedIn, notes);
 
 function notFound(req, res, next) {
   res.status(404);
