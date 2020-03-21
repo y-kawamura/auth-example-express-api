@@ -8,7 +8,7 @@ const router = express.Router();
 // GET /api/v1/users 
 // Return to list all users
 router.get('/users', async (req, res) => {
-  const userList = await users.find();
+  const userList = await users.find({}, '-password');
   res.json(userList);
 });
 
