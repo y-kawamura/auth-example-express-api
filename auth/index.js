@@ -21,10 +21,8 @@ const schema = Joi.object({
 });
 
 function createTokenSendResponse(user, res, next) {
-  const payload = {
-    _id: user._id,
-    username: user.username
-  };
+  const payload = user;
+  delete payload.password;
 
   jwt.sign(
     payload,
