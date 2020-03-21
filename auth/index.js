@@ -18,11 +18,6 @@ const schema = Joi.object({
     .required(),
   password: Joi.string()
     .pattern(new RegExp('^[a-zA-Z0-9-_]{3,}$')),
-  role: Joi.string()
-    .valid('user', 'admin', 'mod')
-    .default('user'),
-  active: Joi.bool()
-    .default(true),
 });
 
 function createTokenSendResponse(user, res, next) {
@@ -80,6 +75,8 @@ router.post('/signup', async (req, res, next) => {
   const newUser = {
     ...validated,
     password: hashPassword,
+    role: 'user',
+    active: true,
   };  
   const created = await users.insert(newUser);
 
