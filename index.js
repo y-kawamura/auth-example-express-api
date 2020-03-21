@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 
 app.use('/auth', auth);
 app.use('/api/v1/notes', middlewares.isLoggedIn, notes);
-app.use('/api/v1/', users);
+app.use('/api/v1/users', users);
 
 function notFound(req, res, next) {
   res.status(404);
