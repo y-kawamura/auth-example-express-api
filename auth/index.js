@@ -16,7 +16,13 @@ const schema = Joi.object({
     .min(2)
     .max(30)
     .required(),
-  password: Joi.string().pattern(new RegExp('^[a-zA-Z0-9-_]{3,}$'))
+  password: Joi.string()
+    .pattern(new RegExp('^[a-zA-Z0-9-_]{3,}$')),
+  role: Joi.string()
+    .valid('user', 'admin', 'mod')
+    .default('user'),
+  active: Joi.bool()
+    .default(true),
 });
 
 function createTokenSendResponse(user, res, next) {
@@ -69,12 +75,12 @@ router.post('/signup', async (req, res, next) => {
 
   // 3. hash the password
   const hashPassword = await bcrypt.hash(validated.password, saltRounds);
-
+  
   // 4. insert to DB
   const newUser = {
-    username: validated.username,
-    password: hashPassword
-  };
+    ...validated,
+    password: hashPassword,
+  };  
   const created = await users.insert(newUser);
 
   // 4. Create and Response a JWT
