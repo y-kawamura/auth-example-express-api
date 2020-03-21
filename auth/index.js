@@ -100,8 +100,8 @@ router.post('/login', async (req, res, next) => {
 
   // 2. find username
   const user = await users.findOne({ username: validated.username });
-  if (!user) {
-    // not found the username
+  if (!user || !user.active) {
+    // not found user or not active
     return failLogin(res, next);
   }
 
