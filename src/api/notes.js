@@ -2,6 +2,7 @@ const express = require('express');
 const Joi = require('@hapi/joi');
 
 const db = require('../db/connection');
+
 const notes = db.get('notes');
 
 const schema = Joi.object({
@@ -33,7 +34,7 @@ router.post('/', async (req, res, next) => {
     user_id: req.user._id,
   };
   const created = await notes.insert(note);
-  res.json(created);
+  return res.json(created);
 });
 
 module.exports = router;

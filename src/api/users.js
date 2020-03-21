@@ -1,9 +1,9 @@
 const express = require('express');
 const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
-const saltRounds = 12;
 const db = require('../db/connection');
 
+const saltRounds = 12;
 const users = db.get('users');
 
 const router = express.Router();
@@ -25,7 +25,7 @@ const userUpdateSchema = Joi.object({
  * GET /
  * Return to list all users
  */
-router.get('/', async (req, res) => {
+router.get('/', async (req, res, next) => {
   try {
     const userList = await users.find({}, '-password');
     res.json(userList);
@@ -35,12 +35,12 @@ router.get('/', async (req, res) => {
 });
 
 /**
- * PATCH /:id 
+ * PATCH /:id
  * Update a user
  */
 router.patch('/:id', async (req, res, next) => {
   const { id: _id } = req.params;
-  
+
   // find user
   try {
     // validate req id
@@ -55,13 +55,13 @@ router.patch('/:id', async (req, res, next) => {
   }
 
   // validate update item
-  try { 
+  try {
     await userUpdateSchema.validateAsync(req.body);
   } catch (error) {
     res.statusCode = 422;
     return next(error);
   }
-  
+
   // update user in db
   try {
     const updateReq = req.body;
@@ -72,13 +72,13 @@ router.patch('/:id', async (req, res, next) => {
 
     const updated = await users.findOneAndUpdate(
       { _id },
-      { $set: updateReq }
+      { $set: updateReq },
     );
-    
+
     delete updated.password;
-    res.json(updated);
+    return res.json(updated);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 });
 

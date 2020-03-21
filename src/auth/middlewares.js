@@ -16,7 +16,7 @@ function checkTokenSetUser(req, res, next) {
     return next();
   }
 
-  jwt.verify(
+  return jwt.verify(
     token,
     process.env.TOKEN_SECRET,
     (err, user) => {
@@ -24,9 +24,9 @@ function checkTokenSetUser(req, res, next) {
         console.log(err);
       }
       req.user = user;
-      next();
-    }
-  )
+      return next();
+    },
+  );
 }
 
 function unAuthorized(res, next) {

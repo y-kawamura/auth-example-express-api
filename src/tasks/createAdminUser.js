@@ -1,7 +1,9 @@
 require('dotenv').config();
 
-const db = require('../db/connection');
 const bcrypt = require('bcrypt');
+
+const db = require('../db/connection');
+
 const saltRounds = 12;
 
 const users = db.get('users');
