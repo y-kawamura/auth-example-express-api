@@ -49,7 +49,7 @@ function notFound(req, res, next) {
 
 // eslint-disable-next-line no-unused-vars
 function errorHandler(err, req, res, next) {
-  res.status(res.statusCode || 500);
+  res.status(res.statusCode === 200 ? 500 : res.statusCode);
   res.json({
     message: err.message,
     stack: err.stack,
