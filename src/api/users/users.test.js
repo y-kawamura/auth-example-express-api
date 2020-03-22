@@ -67,8 +67,7 @@ describe('GET /api/v1/users', () => {
       .get('/api/v1/users')
       .set('Authorization', `Bearer ${tokenAdmin}`)
       .expect(200);
-    expect(response.body[0]).to.deep.include({ username: 'Admin' });
-    expect(response.body[1]).to.deep.include({ username: 'user' });
+    expect(response.body[0]).to.have.property('username');
   });
 });
 
