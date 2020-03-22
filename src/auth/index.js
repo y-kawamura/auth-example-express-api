@@ -19,7 +19,8 @@ const schema = Joi.object({
     .max(30)
     .required(),
   password: Joi.string()
-    .pattern(new RegExp('^[a-zA-Z0-9-_]{3,}$')),
+    .pattern(new RegExp('^[a-zA-Z0-9-_]{3,}$'))
+    .required(),
 });
 
 function failLogin(res, next) {
