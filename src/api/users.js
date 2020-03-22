@@ -56,6 +56,9 @@ router.patch('/:id', async (req, res, next) => {
 
   // validate update item
   try {
+    if (!Object.keys(req.body).length) {
+      throw new Error('request is empty');
+    }
     await userUpdateSchema.validateAsync(req.body);
   } catch (error) {
     res.statusCode = 422;
