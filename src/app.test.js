@@ -3,7 +3,7 @@ const { expect } = require('chai');
 
 const app = require('./app');
 
-describe('app', () => {
+describe('GET /', () => {
   it('should response with a message', async () => {
     const response = await request(app)
       .get('/')
