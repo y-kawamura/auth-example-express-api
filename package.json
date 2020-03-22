@@ -8,8 +8,8 @@
     "dev": "nodemon src/index.js",
     "seed:admin": "node src/tasks/createAdminUser.js",
     "lint": "eslint src/",
-    "test": "NODE_ENV=test mocha \"src/**/*.test.js\" --exit"
-
+    "test": "NODE_ENV=test mocha \"src/**/*.test.js\" --exit",
+    "heroku-postbuild": "npm run seed;admin"
   },
   "keywords": [],
   "author": "",
