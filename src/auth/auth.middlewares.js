@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken');
+const schema = require('./auth.schema');
 
 function isExistAuthHeader(authHeader) {
   return authHeader && authHeader.split(' ')[0] === 'Bearer';
@@ -51,8 +52,21 @@ function isAdmin(req, res, next) {
   }
 }
 
+const validateUser = (defaultErrorMessage = '') => async (req, res, next) => {
+  try {
+    await schema.validateAsync(req.body);
+    next();
+  } catch (error) {
+    // validation failed
+    res.statusCode = 422;
+    const err = defaultErrorMessage ? new Error(defaultErrorMessage) : error;
+    next(err);
+  }
+};
+
 module.exports = {
   checkTokenSetUser,
   isLoggedIn,
   isAdmin,
+  validateUser,
 };

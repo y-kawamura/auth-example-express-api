@@ -5,10 +5,10 @@ const cors = require('cors');
 
 require('dotenv').config();
 
-const auth = require('./auth');
+const auth = require('./auth/auth.routes');
 const notes = require('./api/notes');
 const users = require('./api/users');
-const middlewares = require('./auth/middlewares');
+const middlewares = require('./auth/auth.middlewares');
 
 const app = express();
 

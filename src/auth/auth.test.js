@@ -1,15 +1,12 @@
 const request = require('supertest');
 const { expect } = require('chai');
+const bcrypt = require('bcrypt');
 
 const app = require('../app');
 const db = require('../db/connection');
+const config = require('../config');
 
 const users = db.get('users');
-
-const user = {
-  username: 'user',
-  password: 'password',
-};
 
 describe('GET /auth', () => {
   it('should response with a message', async () => {
@@ -21,10 +18,16 @@ describe('GET /auth', () => {
 });
 
 describe('POST /auth/signup', () => {
-
   beforeEach(async () => {
     await users.drop();
-    await request(app).post('/auth/signup').send(user);
+
+    const hashPassword = await bcrypt.hash('password', config.saltRounds);
+    await users.insert({
+      username: 'user',
+      password: hashPassword,
+      active: true,
+      role: 'user',
+    });
   });
 
   it('should require a username', async () => {
@@ -69,10 +72,22 @@ describe('POST /auth/signup', () => {
 });
 
 describe('POST /auth/login', () => {
-
-  before(async () => {
+  beforeEach(async () => {
     await users.drop();
-    await request(app).post('/auth/signup').send(user);
+
+    const hashPassword = await bcrypt.hash('password', config.saltRounds);
+    await users.insert({
+      username: 'user',
+      password: hashPassword,
+      active: true,
+      role: 'user',
+    });
+    await users.insert({
+      username: 'inactiveUser',
+      password: hashPassword,
+      active: false,
+      role: 'user',
+    });
   });
 
   it('should require a username', async () => {
@@ -115,12 +130,25 @@ describe('POST /auth/login', () => {
     expect(response.body.message).to.equal('Unable to login.');
   });
 
+  it('should only allow active user to login', async () => {
+    const response = await request(app)
+      .post('/auth/login')
+      .send({
+        username: 'inactiveUser',
+        password: 'password',
+      })
+      .expect(422);
+    expect(response.body.message).to.equal('Unable to login.');
+  });
+
   it('should login with valid user and password', async () => {
     const response = await request(app)
       .post('/auth/login')
-      .send(user)
+      .send({
+        username: 'user',
+        password: 'password',
+      })
       .expect(200);
     expect(response.body).to.have.property('token');
   });
-
 });
