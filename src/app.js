@@ -15,7 +15,7 @@ const app = express();
 app.use(volleyball);
 app.use(
   cors({
-    origin: 'http://localhost:8080',
+    origin: 'https://penta-auth-sample.now.sh',
   }),
 );
 app.use(express.json());
